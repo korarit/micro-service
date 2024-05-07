@@ -25,9 +25,11 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/microservices": "^10.2.5",
     "@nestjs/platform-express": "^9.0.0",
+    "mysql2": "^3.9.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
