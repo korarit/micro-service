@@ -17,7 +17,7 @@ export class AppService {
     private userRepository: Repository<User>,
   ) {}
 
-  addUser(data: UserData): string {
+  addUser(data: UserData): boolean {
     const user = new User();
     user.username = data.username;
     user.password = data.password;
@@ -26,13 +26,13 @@ export class AppService {
 
     try {
       this.userRepository.save(user);
-      return 'User added successfully';
+      return true;
     } catch (error) {
-      return 'Error adding user';
+      return false;
     }
   }
 
-  async getUser(id: number) {
+  async getUser(id: number): Promise<User> {
     try {
       const user = this.userRepository.findOne({
         where: { id: id },
@@ -44,7 +44,7 @@ export class AppService {
     }
   }
 
-  async updateUser(id: number, data: UserData): Promise<string> {
+  async updateUser(id: number, data: any): Promise<string> {
     try {
       const user = await this.userRepository.findOne({
         where: { id: id },
@@ -53,17 +53,17 @@ export class AppService {
       if (!user) {
         return 'User not found';
       }
-      if (data.username) {
+      if (data.username !== undefined) {
         user.username = data.username;
       }
-      if (data.password) {
+      if (data.password !== undefined) {
         user.password = data.password;
       }
 
-      if (data.firstName) {
+      if (data.firstName !== undefined) {
         user.firstname = data.firstName;
       }
-      if (data.lastName) {
+      if (data.lastName !== undefined) {
         user.lastname = data.lastName;
       }
 
