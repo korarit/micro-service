@@ -1,13 +1,17 @@
 import { Controller } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AppService } from './user.service';
 import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  getHello(): string {
+    return 'Hello World!';
+  }
+
   @MessagePattern({ cmd: 'user/add' })
-  addUser(data: any): boolean {
+  addUser(data: any): string {
     return this.appService.addUser(data);
   }
 
@@ -17,12 +21,12 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'user/update' })
-  async updateUser(id: number, data: any): Promise<string> {
-    return await this.appService.updateUser(id, data);
+  async updateUser(data: any): Promise<string> {
+    return await this.appService.updateUser(data);
   }
 
   @MessagePattern({ cmd: 'user/delete' })
-  deleteUser(id: number): string {
+  async deleteUser(id: number): Promise<string> {
     return this.appService.deleteUser(id);
   }
 }

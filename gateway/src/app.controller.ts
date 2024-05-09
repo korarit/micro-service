@@ -37,7 +37,7 @@ export class AppController {
   }
 
   @Delete('user/:id')
-  deleteUser(@Param('id') id: string): Observable<string> {
+  deleteUser(@Param('id') id: number): Observable<string> {
     return this.appService.deleteUser(id);
   }
 }

@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AppService {
   constructor(
-    @Inject('USER_SERVICE') private readonly userService: ClientProxy,
-    @Inject('PRODUCT_SERVICE') private readonly productService: ClientProxy,
-    @Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
+    @Inject('USER_SERVICE') private readonly userService: ClientProxy
+    //@Inject('PRODUCT_SERVICE') private readonly productService: ClientProxy,
+    //@Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
   ) {}
 
   getHello(): string {
@@ -28,7 +28,7 @@ export class AppService {
     return this.userService.send({ cmd: 'user/update' }, data);
   }
 
-  deleteUser(data): Observable<any> {
+  deleteUser(data: number): Observable<any> {
     return this.userService.send({ cmd: 'user/delete' }, data);
   }
 }

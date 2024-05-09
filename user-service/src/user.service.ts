@@ -17,7 +17,10 @@ export class AppService {
     private userRepository: Repository<User>,
   ) {}
 
-  addUser(data: UserData): boolean {
+  addUser(data: UserData): string {
+    if (!data.username || !data.password || !data.firstName || !data.lastName) {
+      return 'All fields are required';
+    }
     const user = new User();
     user.username = data.username;
     user.password = data.password;
@@ -26,9 +29,10 @@ export class AppService {
 
     try {
       this.userRepository.save(user);
-      return true;
+      console.log('User added successfully');
+      return 'User added successfully';
     } catch (error) {
-      return false;
+      return 'Error adding user';
     }
   }
 
@@ -44,10 +48,14 @@ export class AppService {
     }
   }
 
-  async updateUser(id: number, data: any): Promise<string> {
+  async updateUser(data: any): Promise<string> {
     try {
+      if (!data.id) {
+        return 'User ID not provided';
+      }
+
       const user = await this.userRepository.findOne({
-        where: { id: id },
+        where: { id: data.id },
       });
 
       if (!user) {
@@ -75,8 +83,18 @@ export class AppService {
     }
   }
 
-  deleteUser(id: number): string {
+  async deleteUser(id: number): Promise<string> {
     try {
+      if (!id) {
+        return 'User ID not provided';
+      }
+      //check if user exists
+      const user = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!user) {
+        return 'User not found';
+      }
       this.userRepository.delete({ id: id });
       return 'User deleted successfully';
     } catch (error) {

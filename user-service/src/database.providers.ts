@@ -14,7 +14,7 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         connectTimeout: 60 * 60 * 1000,
         database: process.env.DB_NAME,
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: ['/*.entity{.ts,.js}'],
         synchronize: true,
       });
       return dataSource.initialize();
