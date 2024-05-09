@@ -32,6 +32,7 @@ export class AppService {
       console.log('User added successfully');
       return 'User added successfully';
     } catch (error) {
+      console.log(error);
       return 'Error adding user';
     }
   }

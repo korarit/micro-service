@@ -1,5 +1,7 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
+
+import { User } from './user.entity';
 dotenv.config();
 
 export const databaseProviders = [
@@ -14,7 +16,7 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         connectTimeout: 60 * 60 * 1000,
         database: process.env.DB_NAME,
-        entities: ['/*.entity{.ts,.js}'],
+        entities: [User],
         synchronize: true,
       });
       return dataSource.initialize();
