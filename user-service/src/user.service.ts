@@ -1,4 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
+
+//bcrypt for password hashing
+import { hash, compare } from 'bcrypt';
+
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 
@@ -17,13 +21,14 @@ export class AppService {
     private userRepository: Repository<User>,
   ) {}
 
-  addUser(data: UserData): string {
+  async addUser(data: UserData): Promise<string> {
     if (!data.username || !data.password || !data.firstName || !data.lastName) {
       return 'All fields are required';
     }
     const user = new User();
     user.username = data.username;
-    user.password = data.password;
+    //hash the password before saving
+    user.password = await hash(data.password, 10);
     user.firstname = data.firstName;
     user.lastname = data.lastName;
 

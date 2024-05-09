@@ -11,8 +11,8 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'user/add' })
-  addUser(data: any): string {
-    return this.appService.addUser(data);
+  async addUser(data: any): Promise<string> {
+    return await this.appService.addUser(data);
   }
 
   @MessagePattern({ cmd: 'user/get' })
