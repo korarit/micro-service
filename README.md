@@ -1,5 +1,5 @@
-# example-nestjs-microservices
-ตัวอย่างการใช้งาน Microservices ของ NestJS
+# microservice 
+ เป็นงานในโครงการ Dev init 2 ของ borntodev 
 
 ## วิธีการใช้งาน
 `cd` เข้าทุก folder จากนั้น `run` ทุก folder พร้อมกัน โดยแต่ละ folder จะมี `PORT` ตามด้านล่าง

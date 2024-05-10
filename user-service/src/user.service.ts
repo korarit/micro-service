@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 //bcrypt for password hashing
-import { hash, compare } from 'bcrypt';
+import { hash } from 'bcrypt';
 
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -42,13 +42,22 @@ export class AppService {
     }
   }
 
-  async getUser(id: number): Promise<User> {
+  async getUser(id: number): Promise<any> {
     try {
-      const user = this.userRepository.findOne({
+      if (!id) {
+        return null;
+      }
+
+      const user = await this.userRepository.findOne({
         where: { id: id },
       });
 
-      return user;
+      return {
+        username: user.username,
+        firstName: user.firstname,
+        lastName: user.lastname,
+        createdAt: user.createAt,
+      };
     } catch (error) {
       return null;
     }
