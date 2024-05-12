@@ -25,6 +25,15 @@ export class AppService {
     if (!data.username || !data.password || !data.firstName || !data.lastName) {
       return 'All fields are required';
     }
+
+    //check if user already exists
+    const userExists = await this.userRepository.findOne({
+      where: { username: data.username },
+      select: { id: true },
+    });
+    if (userExists) {
+      return 'User already exists';
+    }
     const user = new User();
     user.username = data.username;
     //hash the password before saving
@@ -50,6 +59,12 @@ export class AppService {
 
       const user = await this.userRepository.findOne({
         where: { id: id },
+        select: {
+          username: true,
+          firstname: true,
+          lastname: true,
+          createAt: true,
+        },
       });
 
       return {
@@ -71,6 +86,12 @@ export class AppService {
 
       const user = await this.userRepository.findOne({
         where: { id: data.id },
+        select: {
+          username: true,
+          password: true,
+          firstname: true,
+          lastname: true,
+        },
       });
 
       if (!user) {
@@ -106,6 +127,7 @@ export class AppService {
       //check if user exists
       const user = await this.userRepository.findOne({
         where: { id: id },
+        select: { id: true },
       });
       if (!user) {
         return 'User not found';
