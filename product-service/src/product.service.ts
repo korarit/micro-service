@@ -39,7 +39,7 @@ export class AppService {
   async getProduct(id: number): Promise<any> {
     try {
       if (!id) {
-        return null;
+        return 'Product ID not provided';
       }
 
       const productData = await this.productRepository.findOne({
@@ -54,7 +54,7 @@ export class AppService {
         createdAt: productData.createAt,
       };
     } catch (error) {
-      return null;
+      return 'Error fetching Product';
     }
   }
 
@@ -109,6 +109,27 @@ export class AppService {
       return 'Product deleted successfully';
     } catch (error) {
       return 'Error deleting Product';
+    }
+  }
+
+  async checkProductById(id: number): Promise<boolean> {
+    try {
+      if (!id) {
+        return false;
+      }
+
+      const productData = await this.productRepository.findOne({
+        where: { id: id },
+        select: { id: true },
+      });
+
+      if (!productData) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 }

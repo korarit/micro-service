@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 //bcrypt for password hashing
-import { hash } from 'bcrypt';
+import { hash, compare } from 'bcrypt';
 
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -11,6 +11,11 @@ interface UserData {
   password: string;
   firstName: string;
   lastName: string;
+}
+
+interface LoginData {
+  username: string;
+  password: string;
 }
 
 @Injectable()
@@ -54,7 +59,7 @@ export class AppService {
   async getUser(id: number): Promise<any> {
     try {
       if (!id) {
-        return null;
+        return 'User ID not provided';
       }
 
       const user = await this.userRepository.findOne({
@@ -74,7 +79,7 @@ export class AppService {
         createdAt: user.createAt,
       };
     } catch (error) {
-      return null;
+      return 'Error fetching user';
     }
   }
 
@@ -125,7 +130,7 @@ export class AppService {
         return 'User ID not provided';
       }
       //check if user exists
-      const user = await this.userRepository.findOne({
+      const user: any = await this.userRepository.findOne({
         where: { id: id },
         select: { id: true },
       });
@@ -136,6 +141,70 @@ export class AppService {
       return 'User deleted successfully';
     } catch (error) {
       return 'Error deleting user';
+    }
+  }
+
+  async checkUserById(userId: number): Promise<boolean> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        select: { id: true },
+      });
+      //if user exists return true
+      if (user) {
+        return true;
+      }
+      //if user does not exist return false
+      return false;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async loginUser(data: LoginData): Promise<any> {
+    try {
+      if (data.username == '' || data.password == '') {
+        return {
+          status: false,
+          message: 'All fields are required',
+        };
+      }
+
+      const user = await this.userRepository.findOne({
+        where: { username: data.username },
+        select: {
+          password: true,
+          id: true,
+        },
+      });
+
+      if (!user) {
+        return {
+          status: false,
+          message: 'Invalid username or password',
+        };
+      }
+
+      //compare the password with the hashed password
+      const match: boolean = await compare(data.password, user.password);
+      if (!match) {
+        return {
+          status: false,
+          message: 'Invalid username or password',
+        };
+      }
+
+      return {
+        status: true,
+        message: 'Login successful',
+        user_id: user.id,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: 'An error occurred',
+      };
     }
   }
 }

@@ -12,7 +12,7 @@ export class productService {
     return 'Hello World!';
   }
 
-  //////////// User Service ////////////
+  //////////// Product Service ////////////
 
   addProduct(data): Observable<any> {
     return this.Service.send({ cmd: 'product/add' }, data);

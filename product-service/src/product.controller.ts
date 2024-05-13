@@ -29,4 +29,9 @@ export class AppController {
   async deleteProduct(id: number): Promise<string> {
     return this.appService.deleteProduct(id);
   }
+
+  @MessagePattern({ cmd: 'product/check_by_id' })
+  async checkProductById(id: number): Promise<boolean> {
+    return this.appService.checkProductById(id);
+  }
 }

@@ -10,19 +10,19 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: {
-          port: 3011,
+          port: 3001,
         },
       },
       {
         name: 'PRODUCT_SERVICE',
         transport: Transport.TCP,
-        options: { port: 3012 },
+        options: { port: 3002 },
       },
-      {
-        name: 'ORDER_SERVICE',
-        transport: Transport.TCP,
-        options: { port: 3013 },
-      },
+      // {
+      //   name: 'ORDER_SERVICE',
+      //   transport: Transport.TCP,
+      //   options: { port: 3003 },
+      // },
     ]),
   ],
   exports: [ClientsModule],

@@ -29,4 +29,9 @@ export class AppController {
   async deleteUser(id: number): Promise<string> {
     return this.appService.deleteUser(id);
   }
+
+  @MessagePattern({ cmd: 'user/check_by_id' })
+  async checkUserById(id: number): Promise<boolean> {
+    return this.appService.checkUserById(id);
+  }
 }

@@ -12,7 +12,7 @@ export class userService {
 
   //////////// User Service ////////////
 
-  addUser(data: any): Observable<any> {
+  addUser(data: any): Observable<any | string> {
     return this.Service.send({ cmd: 'user/add' }, data);
   }
 
