@@ -34,4 +34,9 @@ export class AppController {
   async checkProductById(id: number): Promise<boolean> {
     return this.appService.checkProductById(id);
   }
+
+  @MessagePattern({ cmd: 'product/subtract' })
+  async subtractProduct(data: any): Promise<boolean | string> {
+    return this.appService.subtractProductCount(data);
+  }
 }

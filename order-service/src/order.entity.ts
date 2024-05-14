@@ -19,6 +19,9 @@ export class Order {
   @Column('int')
   order_total: number;
 
+  @Column('text')
+  address: string;
+
   @CreateDateColumn()
   createAt: Date;
 }

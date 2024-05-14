@@ -93,6 +93,45 @@ export class AppService {
     }
   }
 
+  async subtractProductCount(data: any): Promise<string | boolean> {
+    try {
+      if (!data.product_id || !data.count || !data.type) {
+        return 'Product ID and count not provided';
+      }
+
+      const productData = await this.productRepository.findOne({
+        where: { id: data.product_id },
+      });
+
+      if (!productData) {
+        return 'Product not found';
+      }
+
+      if (data.type === 'add') {
+        productData.count = productData.count + data.count;
+
+        // Update the product count
+        this.productRepository.save(productData);
+        return true;
+      } else if (data.type === 'subtract') {
+        if (productData.count < data.count || productData.count <= 0) {
+          return 'Product count is less than the count to be order';
+        }
+
+        productData.count = productData.count - data.count;
+
+        // Update the product count
+        this.productRepository.save(productData);
+
+        return true;
+      }
+
+      return true;
+    } catch (error) {
+      return 'Error updating Product count';
+    }
+  }
+
   async deleteProduct(id: number): Promise<string> {
     try {
       if (!id) {

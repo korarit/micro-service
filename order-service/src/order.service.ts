@@ -1,6 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
+// import { Observable } from 'rxjs';
+
 import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 
@@ -8,6 +10,7 @@ interface ProductData {
   user_id: number;
   product_id: number;
   count: number;
+  address: string;
 }
 
 @Injectable()
@@ -21,34 +24,52 @@ export class AppService {
   ) {}
 
   async addOrder(data: ProductData): Promise<string> {
-    if (!data.user_id || !data.product_id || !data.count) {
+    if (!data.user_id || !data.product_id || !data.count || !data.address) {
       return 'All fields are required';
+    }
+
+    if (data.count <= 0) {
+      return 'Count must be greater than 0';
     }
 
     //check if user exists
     // eslint-disable-next-line prettier/prettier
-    const user = await this.userService.send({ cmd: 'user/check_by_id' },data.user_id);
+    const user: boolean = await this.userService.send({ cmd: 'user/check_by_id' },data.user_id).toPromise();
     if (!user) {
       return 'User not found';
     }
 
     //check if product exists
     // eslint-disable-next-line prettier/prettier
-    const product = await this.productService.send({ cmd: 'product/check_by_id' },data.product_id);
+    const product: boolean = await this.productService.send({ cmd: 'product/check_by_id' },data.product_id).toPromise();
     if (!product) {
       return 'Product not found';
+    }
+
+    const payloadCount = {
+      product_id: data.product_id,
+      remove_count: data.count,
+    };
+
+    // subtract product count
+    const productRemoveCount: boolean | string = await this.productService.send({ cmd: 'product/subtract' }, payloadCount).toPromise();
+
+    //check productRemoveCount type is string
+    if (typeof productRemoveCount === 'string') {
+      return productRemoveCount;
     }
 
     const ProductObj = new Order();
     ProductObj.user_id = data.user_id;
     ProductObj.product_id = data.product_id;
     ProductObj.order_total = data.count;
+    ProductObj.address = data.address;
 
     try {
       await this.orderRepository.save(ProductObj);
-      return 'Product added successfully';
+      return 'Order added successfully';
     } catch (error) {
-      return 'Error adding Product';
+      return 'Error adding Order';
     }
   }
 
@@ -68,7 +89,11 @@ export class AppService {
 
       // get product details
       // eslint-disable-next-line prettier/prettier
-      const productData: any = await this.productService.send({ cmd: 'product/get' }, orderData.product_id);
+      const productData: any | string = await this.productService.send({ cmd: 'product/get' }, orderData.product_id).toPromise();
+
+      if (!productData || productData.item_price === undefined) {
+        return 'Product not found';
+      }
 
       return {
         user_id: orderData.user_id,
@@ -76,9 +101,11 @@ export class AppService {
         order_total: orderData.order_total,
         item_price: productData.item_price,
         order_price: orderData.order_total * productData.item_price,
+        user_address: orderData.address,
         createdAt: orderData.createAt,
       };
     } catch (error) {
+      console.log(error);
       return 'Error fetching Order';
     }
   }
@@ -86,7 +113,7 @@ export class AppService {
   async updateOrder(data: any): Promise<string> {
     try {
       if (!data.id) {
-        return 'Product ID not provided';
+        return 'Order ID not provided';
       }
 
       const OrderData = await this.orderRepository.findOne({
@@ -94,17 +121,40 @@ export class AppService {
       });
 
       if (!OrderData) {
-        return 'Product not found';
+        return 'Order not found';
       }
-      if (data.name !== undefined) {
+      if (data.user_id !== undefined) {
         OrderData.user_id = data.user_id;
       }
-      if (data.type !== undefined) {
+      if (data.product_id !== undefined) {
         OrderData.product_id = data.product_id;
       }
 
       if (data.count !== undefined) {
+        let payloadCount: any;
+        if (data.count > OrderData.order_total) {
+          payloadCount = {
+            product_id: OrderData.product_id,
+            type: 'subtract',
+            count: data.count - OrderData.order_total,
+          };
+        } else {
+          payloadCount = {
+            product_id: OrderData.product_id,
+            type: 'add',
+            count: OrderData.order_total - data.count,
+          };
+        }
+        //subtract product count
+        // eslint-disable-next-line prettier/prettier
+        const productRemoveCount: boolean | string = await this.productService.send({ cmd: 'product/subtract' }, payloadCount).toPromise();
+
+
         OrderData.order_total = data.count;
+      }
+
+      if (data.address !== undefined) {
+        OrderData.address = data.address;
       }
 
       this.orderRepository.save(OrderData);

@@ -30,11 +30,12 @@ export class AppController {
   //////////// User Service ////////////
 
   @Post('user')
-  async addUser(@Body() { data }): Promise<any | string> {
+  addUser(@Body() { data }): Observable<any> | string {
     if (!data) {
+      console.log(data);
       return 'Data not found';
     }
-    return await this.userClass.addUser(data);
+    return this.userClass.addUser(data);
   }
 
   @Get('user/:id')
