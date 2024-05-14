@@ -106,7 +106,8 @@ export class AppService {
         user.username = data.username;
       }
       if (data.password !== undefined) {
-        user.password = data.password;
+        //hash the password by bcrypt
+        user.password = await hash(data.password, 10);
       }
 
       if (data.firstName !== undefined) {
