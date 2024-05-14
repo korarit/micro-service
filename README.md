@@ -22,8 +22,9 @@ DB_NAME=microservice_task
 ```
 
 ## วิธีการใช้ User Service
-**GET /user/:id** :id แทน user id ที่ต้องการดึงข้อมูลผู้ใช้มา ไม่มี payload
---
+
+**GET /user/:id** :id แทน user id ที่ต้องการดึงข้อมูลผู้ใช้มา ไม่มี payload <br />
+
 **POST /user** มี payload แบบนี้
 ```
 {
@@ -48,8 +49,9 @@ DB_NAME=microservice_task
 **DELETE /user/:id** :id แทน user id ที่ต้องการลบ ไม่มี payload
 
 ## วิธีการใช้ Product Service
-**GET /product/:id** :id แทน user id ที่ต้องการดึงข้อมูล product นั้นๆ มา ไม่มี payload
---
+
+**GET /product/:id** :id แทน user id ที่ต้องการดึงข้อมูล product นั้นๆ มา ไม่มี payload<br />
+
 **POST /product** มี payload แบบนี้ ใช้การเพิ่ม product ลง database
 ```
 {
@@ -74,8 +76,9 @@ DB_NAME=microservice_task
 **DELETE /product/:id** :id แทน product id ที่ต้องการลบ ไม่มี payload
 
 ## วิธีการใช้ Order Service
-**GET /order/:id** :id แทน order id ที่ต้องการดึงข้อมูลมา ไม่มี payload
---
+
+**GET /order/:id** :id แทน order id ที่ต้องการดึงข้อมูลมา ไม่มี payload <br />
+
 **POST /order** มี payload แบบนี้ ใช้การเพิ่ม order ลง database
 ```
 {
